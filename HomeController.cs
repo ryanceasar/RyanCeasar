@@ -36,7 +36,6 @@ namespace WA001.Controllers
                     using (SqlDataAdapter dataAdaptor = new SqlDataAdapter(_SqlCommand))
                     {
                         dataAdaptor.Fill(dsRec);
-                        
                     }
                     if (dsRec != null && dsRec.Tables.Count > 0 && dsRec.Tables[0].Rows.Count > 0)
                     {
@@ -97,8 +96,6 @@ namespace WA001.Controllers
         {
             _List = GetPatients().OrderBy(a => a.PatientName).ToList();
             //Session["PatientList"] = _List;
-            //Session["PatientList"] = _List;
-            
             return View(_List);
         }
 
@@ -115,6 +112,30 @@ namespace WA001.Controllers
                 _NewList = _NewList = _List.Where(x => x.PatientName.Contains(vFilter.ToUpper())).OrderBy(x => x.PatientName).ToList();
             }
             return PartialView("_PatientList", _NewList);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(HttpPostedFileBase file)
+        {
+            if (ModelState.IsValid)
+            {
+                if (file != null)
+                {
+
+                    //file.SaveAs(HttpContext.Server.MapPath("~/Content/Images/") + file.FileName);
+
+                    //file.SaveAs(Path.Combine(HttpContext.Server.MapPath("~/Content/Images/"), file.FileName));
+                    file.SaveAs(Path.Combine(HttpContext.Server.MapPath("~/Images/"), file.FileName));
+
+                    //lens.lens_img = file.FileName;
+                }
+                //db.lenses.Add(lens);
+                //db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            return View();
         }
 
     }
