@@ -72,8 +72,8 @@ namespace WA001.Controllers
         public ActionResult Index()
         {
             string vName = Path.GetRandomFileName();
-            //return Redirect("Home/TestPage");
-            return View();
+            return Redirect("Home/TestPage");
+            //return View();
         }
 
         public ActionResult About()
@@ -91,6 +91,7 @@ namespace WA001.Controllers
         }
 
         static List<PatientModel> _List = new List<PatientModel>();
+
         public ActionResult TestPage()
         {
             _List = GetPatients().OrderBy(a => a.PatientName).ToList();
