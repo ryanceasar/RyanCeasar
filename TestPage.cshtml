@@ -1,0 +1,86 @@
+﻿@model IEnumerable<WA001.Models.PatientModel>
+
+@{
+
+    Layout = null;
+}
+
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<style>
+    .mainDiv {
+        width: 500px;
+        height: 500px;
+        border: solid;
+        position: relative;
+    }
+
+    .lnkBottom {
+        position: relative;
+    }
+</style>
+
+@*
+        <div class="mainDiv">
+        <a class="lnkBottom" href="#">Bottom</a>
+    </div>
+*@
+
+@using (Html.BeginForm("Create", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>lens</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div class="form-group">
+            @*@Html.LabelFor(model => model.lens_img, htmlAttributes: new { @class = "control-label col-md-2" })*@
+            <div class="col-md-10">
+                <input type="file" name="file" id="file" style="width: 100%;" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+        <img src="~/images/1.png" />
+        <img src="~/images/4.png" />
+        <img src="~/images/AA.jpg" />
+    </div>
+}
+
+
+
+
+<input type="text" id="nameToFind" onkeyup="fx_search()">
+<div id="idList">
+    <div id="ListPatient">
+
+    </div>
+</div>
+
+
+<script>
+
+    function fx_search() {
+        var vText = $("#nameToFind").val();
+        $.ajax({
+            url: '/Home/PatientList?vFilter=' + vText,
+            type: 'GET',
+            success: function (result) {
+                document.getElementById("ListPatient").innerHTML = result;
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+
+
+    });
+
+
+</script>
