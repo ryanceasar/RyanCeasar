@@ -36,6 +36,7 @@ namespace WA001.Controllers
                     using (SqlDataAdapter dataAdaptor = new SqlDataAdapter(_SqlCommand))
                     {
                         dataAdaptor.Fill(dsRec);
+                        
                     }
                     if (dsRec != null && dsRec.Tables.Count > 0 && dsRec.Tables[0].Rows.Count > 0)
                     {
@@ -96,6 +97,8 @@ namespace WA001.Controllers
         {
             _List = GetPatients().OrderBy(a => a.PatientName).ToList();
             //Session["PatientList"] = _List;
+            //Session["PatientList"] = _List;
+            
             return View(_List);
         }
 
