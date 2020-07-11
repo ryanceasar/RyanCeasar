@@ -1,0 +1,340 @@
+		/*SQL VARIABLES*/
+		string _strConnString = string.Empty;
+		string sMessage_Code = string.Empty;
+		SqlCommand _sqlcmd = null;
+    		SqlDataReader _sqlreader = null;
+		SqlParameter _sqlpara;
+		SqlConnection _sqlcon = null;
+		SQLObject _sqlObject = null;
+
+
+
+FORM CLOSING
+      _strConnString = null;
+      _expCustom = null;
+      _sqlcmd = null;
+       _sqlpara = null;
+      _sqladapter = null;
+      _sqlreader = null;
+      _sqlcon = null;
+      _EMRSQLObject = null;
+      _strMessageId = null;
+
+
+
+private SageIssuance M_issuanceSave(SageIssuance _SageIssuance)
+    {
+      string vErrorMessage = "";
+      _sqlObject = new SQLObject();
+      _sqlcmd = new SqlCommand();
+      _sqlcmd.CommandText = "sproc_WRD_Manual_Return_Save";
+
+      _sqlpara = new SqlParameter("@Location_Code", _SageIssuance.Location_Code);
+      _sqlcmd.Parameters.Add(_sqlpara);
+
+      try
+      {
+        _strConnString = _sqlObject.GetMasterDBConnString();
+        _sqlcon = new SqlConnection(_strConnString);
+        _sqlcmd.Connection = _sqlcon;
+        _sqlreader = _sqlObject.SqlDataReader(_sqlcmd, false);
+        _sqlreader.Read();
+
+        int index;
+        if(_sqlreader.HasRows)
+        {
+          index = _sqlreader.GetOrdinal("Message_Code");
+          if(!_sqlreader.IsDBNull(index))
+            _SageIssuance.Message_Code = Convert.ToString(_sqlreader.GetString(index));
+          else
+            _SageIssuance.Message_Code = "";
+        }
+      }
+      catch(Exception expCommon)
+      {
+        vErrorMessage = Convert.ToString(expCommon.Message);
+        _SageIssuance = null;
+      }
+      finally
+      {
+        if(_sqlcon.State != ConnectionState.Closed)
+        {
+          _sqlcon.Close();
+        }
+        _sqlcmd = null;
+        _sqlObject = null;
+        if(!string.IsNullOrEmpty(vErrorMessage))
+          MessageBox.Show(vErrorMessage, "Error Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+      return _SageIssuance;
+    }
+
+    private DataSet M_getIssuance(string vISSUE_NO)
+    {
+      DataSet dsClient = new DataSet();
+      _sqlObject = new SQLObject();
+      _sqlcmd = new SqlCommand();
+      _sqlcmd.CommandText = "sproc_WRD_Manual_Return_Get";
+
+      _sqlpara = new SqlParameter("@COST_CENTER_CODE", cost_center_code);
+      _sqlcmd.Parameters.Add(_sqlpara);
+      _sqlpara = new SqlParameter("@ISSUE_NO", vISSUE_NO);
+      _sqlcmd.Parameters.Add(_sqlpara);
+
+      try
+      {
+        _strConnString = _sqlObject.GetMasterDBConnString();
+        _sqlcon = new SqlConnection(_strConnString);
+        _sqlcmd.Connection = _sqlcon;
+        dsClient = _sqlObject.SqlDataAdapter(_sqlcmd, _strConnString);
+      }
+      catch(Exception expCommon)
+      {
+        dsClient = null;
+      }
+
+      finally
+      {
+        if(_sqlcon.State != ConnectionState.Closed)
+        {
+          _sqlcon.Close();
+        }
+        _sqlcmd = null;
+        _sqlObject = null;
+      }
+      return dsClient;
+    }
+
+
+
+
+
+
+
+//CONNECTION DATASET
+		private void DAM_GetRemainingServices(string vEncounterNo, out DataSet dsClient)
+		{
+			dsClient = new DataSet();
+			_sqlObject = new SQLObject();
+			_sqlcmd = new SqlCommand();
+			_sqlcmd.CommandText = "sproc_RIS_OPD_Remaining_Services";
+
+			_sqlpara = new SqlParameter("@Encounter_No", vEncounterNo);
+			_sqlcmd.Parameters.Add(_sqlpara);
+
+			try
+			{
+				_strConnString = _sqlObject.GetMasterDBConnString();
+				_sqlcon = new SqlConnection(_strConnString);
+				_sqlcmd.Connection = _sqlcon;
+				dsClient = _sqlObject.SqlDataAdapter(_sqlcmd, _strConnString);
+			}
+			catch(Exception expCommon)
+			{
+				MessageBox.Show("ERROR: " + expCommon.Message, "System Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				dsClient = null;
+			}
+
+			finally
+			{
+				if(_sqlcon.State == ConnectionState.Open)
+				{
+					_sqlcon.Close();
+				}
+				_sqlcmd = null;
+				_sqlObject = null;
+			}
+		}
+
+
+
+
+
+
+try
+			{
+				DataSet ds = new DataSet();
+				string conString = ConfigurationManager.ConnectionStrings["HISConnection"].ToString();
+				StringBuilder SQL = new StringBuilder();
+				SQL.Append("SELECT LTC_Wards FROM tbl_MST_System_Settings");
+				using(SqlConnection sqlConn = new SqlConnection(conString))
+				{
+					using(SqlCommand sqlCmd = sqlConn.CreateCommand())
+					{
+						sqlConn.Open();
+						SqlDataAdapter SQA_DataAdapter = new SqlDataAdapter(sqlCmd);
+						SQA_DataAdapter.SelectCommand = new SqlCommand(SQL.ToString(), sqlConn);
+						SQA_DataAdapter.Fill(ds, "Table");
+						if(ds != null)
+							if(ds.Tables.Count > 0)
+							{
+
+							}
+					}
+				}
+			}
+			catch(SqlException ex)
+			{
+				MessageBox.Show(ex.Message, "System Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    string conString = ConfigurationManager.ConnectionStrings["DBConnection"].ToString();
+      StringBuilder SQL = new StringBuilder();
+      SQL.Append("SELECT ItemCode AS returnValue1, ItemName AS returnValue2 FROM SRF_WeeklyRequestTransaction WHERE Id = 75");
+      using (SqlConnection sqlConn = new SqlConnection(conString))
+      {
+        sqlConn.Open();
+        SqlCommand sqlCmd = sqlConn.CreateCommand();
+        sqlCmd.CommandText = SQL.ToString();
+        sqlCmd.CommandType = CommandType.Text;
+        SqlDataReader sqlReader;
+        sqlReader = sqlCmd.ExecuteReader();
+        sqlReader.Read();
+        int index;
+        if (sqlReader.HasRows)
+        {
+          index = sqlReader.GetOrdinal("returnValue1");
+          if (!sqlReader.IsDBNull(index))
+             MessageBox.Show(Convert.ToString(sqlReader.GetString(index)));
+          index = sqlReader.GetOrdinal("returnValue2");
+          if (!sqlReader.IsDBNull(index))
+            MessageBox.Show(Convert.ToString(sqlReader.GetString(index)));
+        }
+       
+      }
+
+
+
+
+
+
+//CONNECTION ENTITY
+private void M_SaveRISInvestigationDetails()
+		{
+			sMessage_Code = "";
+			ret_RIS_RequestNo = null;
+
+			_sqlObject = new SQLObject();
+			_sqlcmd = new SqlCommand();
+			_sqlcmd.CommandText = "sproc_RIS_Investigation_Detail_IPD_SAVE_XML";
+
+			_sqlpara = new SqlParameter("@Rec_Id", para_Rec_Id);
+			_sqlcmd.Parameters.Add(_sqlpara);
+
+			try
+			{
+				_strConnString = _sqlObject.GetMasterDBConnString();
+				_sqlcon = new SqlConnection(_strConnString);
+				_sqlcmd.Connection = _sqlcon;
+				_sqlreader = _sqlObject.SqlDataReader(_sqlcmd, false);
+				_sqlreader.Read();
+
+				int index;
+				if(_sqlreader.HasRows)
+				{
+					index = _sqlreader.GetOrdinal("Message_Code");
+					if(!_sqlreader.IsDBNull(index))
+						ret_MessageCode = Convert.ToString(_sqlreader.GetString(index));
+					else
+						ret_MessageCode = "";
+					index = _sqlreader.GetOrdinal("RIS_RequestNo");
+					if(!_sqlreader.IsDBNull(index))
+						ret_RIS_RequestNo = Convert.ToInt64(_sqlreader.GetInt64(index));
+					else
+						ret_RIS_RequestNo = null;
+				}
+			}
+			catch(Exception expCommon)
+			{
+				return;
+			}
+
+			finally
+			{
+				if(_sqlcon.State != ConnectionState.Close())
+				{
+					_sqlcon.Close();
+				}
+				_sqlcmd = null;
+				_sqlObject = null;
+			}
+		}
+
+
+
+
+
+    public SqlDataReader SqlDataReader(SqlCommand pCommand, bool pIsConnOpen)
+    {
+      SqlDataReader sqlreader;
+      pCommand.CommandType = CommandType.StoredProcedure;
+      if(!pIsConnOpen)
+      {
+        pCommand.Connection.Open();
+      }
+      sqlreader = pCommand.ExecuteReader();
+      return sqlreader;
+    }
+
+
+private string M_getRequestValidity(string vxmlData)
+    {
+      try
+      {
+        string conString = ConfigurationManager.ConnectionStrings["DBConnection"].ToString();
+        StringBuilder SQL = new StringBuilder();
+        SQL.Append("EXEC sproc_DEP_RequestPharma_Save");
+        SQL.Append(" @Dept_Rec_ID = '" + vCLINIC_ID + "'");
+        SQL.Append(" ,@Location_Name = '" + Convert.ToString(this.cboToPharmacy.SelectedValue) + "'");
+        SQL.Append(" ,@Request_Type = '" + vRequestType + "'");
+        SQL.Append(" ,@Last_Changed_By = '" + _Globals.GlobalVariables._USER_CODE + "'");
+        SQL.Append(" ,@Remarks = '" + this.txtRemarks.Text.Trim() + "'");
+        SQL.Append(" ,@Computer_Name = '" + Environment.MachineName + "'");
+        SQL.Append(" ,@xmlData = '" + vxmlData + "'");
+        if(!string.IsNullOrEmpty(this.txtRequestNo.Text.Trim()))
+        {
+          SQL.Append(" ,@Request_No = '" + vCLINIC_ID + "'");
+        }
+
+        using(SqlConnection sqlConn = new SqlConnection(conString))
+        {
+          sqlConn.Open();
+          SqlCommand sqlCmd = sqlConn.CreateCommand();
+          sqlCmd.CommandText = SQL.ToString();
+          sqlCmd.CommandType = CommandType.Text;
+          SqlDataReader sqlReader;
+          sqlReader = sqlCmd.ExecuteReader();
+          sqlReader.Read();
+          int index;
+          if(sqlReader.HasRows)
+          {
+            index = sqlReader.GetOrdinal("Message_Code");
+            if(!sqlReader.IsDBNull(index))
+              return Convert.ToString(sqlReader.GetString(index));
+          }
+        }
+        return "";
+      }
+      catch(SqlException ex)
+      {
+        MessageBox.Show(ex.Message, "System Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        return null;
+      }
+    }
