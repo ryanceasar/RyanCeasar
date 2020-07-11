@@ -1,0 +1,15 @@
+CREATE TABLE #tblRec (colRec varchar(500)) 
+
+INSERT INTO #tblRec (colRec)
+SELECT 'AAA' AS colRec UNION ALL
+SELECT 'BBBA' AS colRec UNION ALL
+SELECT 'CCC' AS colRec
+
+Select DISTINCT
+(
+	SELECT colRec + ';' AS colRec
+	FROM #tblRec
+	For xml path(''), TYPE 
+).value('.','NVARCHAR(MAX)') as PersonName
+
+IF OBJECT_ID('tempdb..#tblRec') IS NOT NULL DROP TABLE #tblRec

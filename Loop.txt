@@ -1,0 +1,47 @@
+CREATE Table #tmp (Icount INT, iValue INT, iDesc varchar(10))
+
+DECLARE @iC int = 20
+WHILE @iC > 0
+BEGIN
+	INSERT INTO #tmp (Icount)
+	VALUES (@iC)
+    SET @iC = @iC - 1
+END
+
+
+DECLARE @iV int = (SELECT COUNT(Icount) FROM #tmp)
+WHILE @iV > 0
+BEGIN
+	IF (SELECT Icount FROM #tmp WHERE Icount = @iV) = 2
+	BEGIN
+		UPDATE #tmp
+		SET iValue = Icount + 1
+		WHERE Icount = @iV
+	END
+SET @iV = @iV - 1
+END
+
+
+
+DECLARE @iD int = (SELECT COUNT(Icount) FROM #tmp)
+WHILE @iD > 0
+BEGIN
+	IF (SELECT iValue FROM #tmp WHERE Icount = @iD) > 0 OR (SELECT Icount FROM #tmp WHERE Icount = @iD) = 20
+	BEGIN
+		UPDATE #tmp
+		SET iDesc = 'TEST'
+		WHERE Icount = @iD
+	END
+
+SET @iD = @iD - 1
+END
+
+
+
+
+
+
+SELECT * FROM #tmp
+
+
+IF OBJECT_ID('tempdb..#tmp') IS NOT NULL DROP TABLE #tmp

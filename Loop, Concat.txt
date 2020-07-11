@@ -1,0 +1,41 @@
+DECLARE @data varchar(max) = ''
+
+CREATE Table #tmpRecord (Ward_no varchar(250), Ward_name varchar(250), Updated bit)
+INSERT INTO #tmpRecord (Ward_no, Ward_name,Updated)
+SELECT Ward_no, Ward_name, 0 
+FROM tbl_ADT_Ward_Master
+
+DECLARE @iC int = (SELECT COUNT(*) FROM #tmpRecord)
+WHILE @iC > 0
+BEGIN
+	DECLARE @Ward_no varchar(250) = ''
+	DECLARE @Ward varchar(250) = ''
+
+	SELECT TOP 1 @Ward_no = Ward_no FROM #tmpRecord WHERE Updated = 0
+	SELECT @Ward = Ward_name FROM #tmpRecord WHERE Ward_no = @Ward_no
+
+	IF ISNULL(@Ward, '') <> ''
+	BEGIN
+		SET @data = @data + '' + @Ward + '('+@Ward_no+'); '
+
+		UPDATE #tmpRecord 
+		SET Updated = 1
+		WHERE Ward_no = @Ward_no
+	END
+
+	SET @iC = @iC - 1
+END
+
+
+
+SELECT @data AS AllWards
+
+
+
+IF OBJECT_ID('tempdb..#tmp') IS NOT NULL DROP TABLE #tmp
+IF OBJECT_ID('tempdb..#tmpRecord') IS NOT NULL DROP TABLE #tmpRecord
+
+
+
+
+

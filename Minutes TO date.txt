@@ -1,0 +1,6 @@
+Declare @theMinutes int
+Set @theMinutes = 2945 
+
+Select @theMinutes / 1440 as NoDays  -- 1440 minutes per day        
+, (@theMinutes % 1440) / 60 as NoHours -- modulo 1440        
+, (@theMinutes % 60) as NoMinutes -- modulo 60
