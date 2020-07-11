@@ -1,0 +1,23 @@
+    private void dgvItems_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+    {
+      AddRowNumber(this.dgvItems, e);
+    }
+
+    private void AddRowNumber(DataGridView dgv, DataGridViewRowPostPaintEventArgs e)
+    {
+      if(dgv.RowHeadersVisible)
+      {
+        string strRowNumber = (e.RowIndex + 1).ToString();
+
+        while(strRowNumber.Length < dgv.RowCount.ToString().Length)
+          strRowNumber = " " + strRowNumber;
+
+        SizeF size = e.Graphics.MeasureString(strRowNumber, this.Font);
+
+        if(dgv.RowHeadersWidth < (int)(size.Width + 20))
+          dgv.RowHeadersWidth = (int)(size.Width + 20);
+
+        Brush b = SystemBrushes.ControlText;
+        e.Graphics.DrawString(strRowNumber, this.Font, b, e.RowBounds.Location.X + 15, e.RowBounds.Location.Y + ((e.RowBounds.Height - size.Height) / 2));
+      }
+    }
