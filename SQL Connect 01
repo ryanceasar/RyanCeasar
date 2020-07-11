@@ -1,0 +1,394 @@
+
+    private DataSet GetRecord_()
+    {
+      SqlCommand _SqlCommand = null;
+      SqlParameter _SqlParameter;
+      SqlConnection _SqlConnection = null;
+
+      using(DataSet dsRec = new DataSet())
+      {
+        _SqlCommand = new SqlCommand();
+        _SqlCommand.CommandText = "**************";
+
+        _SqlParameter = new SqlParameter("@param", "param_val");
+        _SqlCommand.Parameters.Add(_SqlParameter);
+
+        try
+        {
+          _SqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["HISConnection"].ToString());
+          _SqlCommand.Connection = _SqlConnection;
+          _SqlCommand.CommandType = CommandType.StoredProcedure;
+          using(SqlDataAdapter dataAdaptor = new SqlDataAdapter(_SqlCommand))
+          {
+            dataAdaptor.Fill(dsRec);
+          }
+        }
+        catch(Exception expCommon)
+        {
+          return null;
+        }
+        finally
+        {
+          if(_SqlConnection.State != ConnectionState.Closed)
+          {
+            _SqlConnection.Close();
+          }
+          _SqlParameter = null;
+          _SqlCommand = null;
+          _SqlConnection = null;
+        }
+        return dsRec;
+      }
+    }
+
+
+
+private string M_Save()
+    {
+      SqlCommand _sqlcmd = null;
+      SqlParameter _sqlpara;
+      SqlConnection _sqlcon = null;
+      SqlDataReader _sqlreader = null;
+
+      _sqlcmd = new SqlCommand();
+      _sqlcmd.CommandText = "proc_WRD_IP_Configuration_Update";
+
+      //_sqlpara = new SqlParameter("@Machine_Name", _WrdMgtEntity.Machine_Name);
+      //_sqlcmd.Parameters.Add(_sqlpara);
+
+
+      try
+      {
+        _sqlcon = new SqlConnection(ConfigurationManager.ConnectionStrings["HISConnection"].ToString());
+        _sqlcmd.Connection = _sqlcon;
+        _sqlcmd.CommandType = CommandType.StoredProcedure;
+
+        //_sqlreader = SqlDataReader(_sqlcmd, false);
+
+        _sqlcmd.Connection.Open();
+        _sqlreader = _sqlcmd.ExecuteReader();
+        _sqlreader.Read();
+
+        int index;
+        if(_sqlreader.HasRows)
+        {
+          index = _sqlreader.GetOrdinal("Message_Code");
+          if(!_sqlreader.IsDBNull(index))
+            return Convert.ToString(_sqlreader.GetString(index));
+        }
+      }
+      catch(Exception expCommon)
+      {
+        //vErrorMessage = Convert.ToString(expCommon.Message);
+        return "FAILED|" + Convert.ToString(expCommon.Message);
+      }
+      finally
+      {
+        if(_sqlcon.State != ConnectionState.Closed)
+        {
+          _sqlcon.Close();
+        }
+        _sqlpara = null;
+        _sqlcmd = null;
+        _sqlreader = null;
+      }
+      return "";
+    }
+
+
+
+
+
+    private DataSet GetComments()
+    {
+      SqlParameter _SqlParameter = null;
+      using(SqlCommand _SqlCommand = new SqlCommand())
+      {
+        using(SqlConnection _SqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["HISConnection"].ToString()))
+        {
+          using(DataSet dsRec = new DataSet())
+          {
+            _SqlCommand.CommandText = "procEMR_IP_eMAR_Comments";
+            _SqlParameter = new SqlParameter("@isCount", true);
+            _SqlCommand.Parameters.Add(_SqlParameter);
+            _SqlParameter = new SqlParameter("@NotificationSource", "D");
+            _SqlCommand.Parameters.Add(_SqlParameter);
+
+            try
+            {
+              _SqlCommand.Connection = _SqlConnection;
+              _SqlCommand.CommandType = CommandType.StoredProcedure;
+              using(SqlDataAdapter dataAdaptor = new SqlDataAdapter(_SqlCommand))
+              {
+                dataAdaptor.Fill(dsRec);
+              }
+            }
+            catch(Exception expCommon)
+            {
+              return null;
+            }
+            finally
+            {
+              if(_SqlConnection.State != ConnectionState.Closed)
+              {
+                _SqlConnection.Close();
+              }
+              _SqlParameter = null;
+            }
+            return dsRec;
+          }
+        }
+      }
+    }
+
+
+    private DataSet GetMedicationList()
+    {
+      SqlParameter _SqlParameter = null;
+      using(SqlCommand _SqlCommand = new SqlCommand())
+      {
+        using(SqlConnection _SqlConnection = new SqlConnection(ConfigurationManager.ConnectionStrings["HISConnection"].ToString()))
+        {
+          using(DataSet dsRec = new DataSet())
+          {
+            _SqlCommand.CommandText = "sproc_WRD_Medication_Reconciliation_MedList";
+            _SqlParameter = new SqlParameter("@Encounter_No", vEncounter_No);
+            _SqlCommand.Parameters.Add(_SqlParameter);
+
+            try
+            {
+              _SqlCommand.Connection = _SqlConnection;
+              _SqlCommand.CommandType = CommandType.StoredProcedure;
+              using(SqlDataAdapter dataAdaptor = new SqlDataAdapter(_SqlCommand))
+              {
+                dataAdaptor.Fill(dsRec);
+              }
+            }
+            catch(Exception expCommon)
+            {
+              return null;
+            }
+            finally
+            {
+              if(_SqlConnection.State != ConnectionState.Closed)
+              {
+                _SqlConnection.Close();
+              }
+              _SqlParameter = null;
+            }
+            return dsRec;
+          }
+        }
+      }
+    }
+
+
+
+private DataSet GetSummary()
+    {
+      SqlCommand _sqlcmd = null;
+      SqlParameter _sqlpara;
+      SqlConnection _sqlcon = null;
+
+      using(DataSet dsData = new DataSet())
+      {
+        _sqlcmd = new SqlCommand();
+        _sqlcmd.CommandText = "sproc_DCS_APP_Summary";
+
+        _sqlpara = new SqlParameter("@Serving_Date", this.dtpSummary.Text);
+        _sqlcmd.Parameters.Add(_sqlpara);
+        try
+        {
+          _sqlcon = new SqlConnection(ConfigurationManager.ConnectionStrings["HISConnection"].ToString());
+          _sqlcmd.Connection = _sqlcon;
+          _sqlcmd.CommandType = CommandType.StoredProcedure;
+          using(SqlDataAdapter dataAdaptor = new SqlDataAdapter(_sqlcmd))
+          {
+            dataAdaptor.Fill(dsData);
+          }
+        }
+        catch(Exception expCommon)
+        {
+          return null;
+        }
+        finally
+        {
+          if(_sqlcon.State != ConnectionState.Closed)
+          {
+            _sqlcon.Close();
+          }
+          _sqlpara = null;
+          _sqlcmd = null;
+          _sqlcon = null;
+        }
+        return dsData;
+      }
+    }
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+string _strConnString = string.Empty;
+    SqlCommand _sqlcmd = null;
+    SqlParameter _sqlpara;
+    SqlConnection _sqlcon = null;
+    SqlDataReader _sqlreader = null;
+
+
+
+    private DataSet GetPatientInformation()
+    {
+      dsData = null;
+      dsData = new DataSet();
+      _sqlpara = null;
+
+      _sqlcmd = new SqlCommand();
+      _sqlcmd.CommandText = "sproc_PRG_GetPatient_ByRegNo";
+
+      _sqlpara = new SqlParameter("@Registration_no", vRegistrationNo);
+      _sqlcmd.Parameters.Add(_sqlpara);
+      try
+      {
+        _strConnString = ConfigurationManager.ConnectionStrings["HISConnection"].ToString();
+        _sqlcon = new SqlConnection(_strConnString);
+        _sqlcmd.Connection = _sqlcon;
+        _sqlcmd.CommandType = CommandType.StoredProcedure;
+        using(SqlDataAdapter dataAdaptor = new SqlDataAdapter(_sqlcmd))
+        {
+          dataAdaptor.Fill(dsData);
+        }
+      }
+      catch(Exception expCommon)
+      {
+        dsData = null;
+      }
+      finally
+      {
+        if(_sqlcon.State != ConnectionState.Closed)
+        {
+          _sqlcon.Close();
+        }
+        _sqlpara = null;
+        _sqlcmd = null;
+      }
+      return dsData;
+    }
+
+
+private string M_Save()
+    {
+      SqlCommand _sqlcmd = null;
+      SqlParameter _sqlpara;
+      SqlConnection _sqlcon = null;
+      SqlDataReader _sqlreader = null;
+
+      _sqlcmd = new SqlCommand();
+      _sqlcmd.CommandText = "proc_WRD_IP_Configuration_Update";
+
+      //_sqlpara = new SqlParameter("@Machine_Name", _WrdMgtEntity.Machine_Name);
+      //_sqlcmd.Parameters.Add(_sqlpara);
+
+
+      try
+      {
+        _sqlcon = new SqlConnection(ConfigurationManager.ConnectionStrings["HISConnection"].ToString());
+        _sqlcmd.Connection = _sqlcon;
+        _sqlcmd.CommandType = CommandType.StoredProcedure;
+
+        //_sqlreader = SqlDataReader(_sqlcmd, false);
+
+        _sqlcmd.Connection.Open();
+        _sqlreader = _sqlcmd.ExecuteReader();
+        _sqlreader.Read();
+
+        int index;
+        if(_sqlreader.HasRows)
+        {
+          index = _sqlreader.GetOrdinal("Message_Code");
+          if(!_sqlreader.IsDBNull(index))
+            return Convert.ToString(_sqlreader.GetString(index));
+        }
+      }
+      catch(Exception expCommon)
+      {
+        //vErrorMessage = Convert.ToString(expCommon.Message);
+        return "FAILED|" + Convert.ToString(expCommon.Message);
+      }
+      finally
+      {
+        if(_sqlcon.State != ConnectionState.Closed)
+        {
+          _sqlcon.Close();
+        }
+        _sqlpara = null;
+        _sqlcmd = null;
+        _sqlreader = null;
+      }
+      return "";
+    }
+
+
+    private string M_SaveRequest(string vUserID)
+    {
+      SqlParameter _sqlpara;
+
+      using(SqlCommand _sqlcmd = new SqlCommand())
+      {
+        using(SqlConnection _sqlcon = new SqlConnection(ConfigurationManager.ConnectionStrings["HISConnection"].ToString()))
+        {
+          SqlDataReader _sqlreader = null;
+
+          _sqlcmd.CommandText = "sproc_WRD_Medication_Reconciliation_SaveRequest";
+
+          if(!string.IsNullOrEmpty(vRec_ID))
+          {
+            _sqlpara = new SqlParameter("@Rec_ID", vRec_ID);
+            _sqlcmd.Parameters.Add(_sqlpara);
+          }
+          _sqlpara = new SqlParameter("@Rec_ID_Ref", vRec_ID_Ref);
+          _sqlcmd.Parameters.Add(_sqlpara);
+
+          try
+          {
+            _sqlcmd.Connection = _sqlcon;
+            _sqlcmd.CommandType = CommandType.StoredProcedure;
+            _sqlcmd.Connection.Open();
+            _sqlreader = _sqlcmd.ExecuteReader();
+            _sqlreader.Read();
+
+            int index;
+            if(_sqlreader.HasRows)
+            {
+              index = _sqlreader.GetOrdinal("Message_Code");
+              if(!_sqlreader.IsDBNull(index))
+                return Convert.ToString(_sqlreader.GetString(index));
+            }
+          }
+          catch(Exception expCommon)
+          {
+            return "FAILED|" + Convert.ToString(expCommon.Message);
+          }
+          finally
+          {
+            if(_sqlcon.State != ConnectionState.Closed)
+            {
+              _sqlcon.Close();
+            }
+            _sqlreader = null;
+          }
+        }
+      }
+
+      return "";
+    }
