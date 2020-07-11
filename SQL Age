@@ -1,0 +1,15 @@
+
+DECLARE @date datetime, 
+@tmpdate datetime, 
+@years int, @months int, @days int
+SELECT @date = '1/7/1988' --MM/dd/yyyy
+
+SELECT @tmpdate = @date
+
+SELECT @years = DATEDIFF(yy, @tmpdate, GETDATE()) - CASE WHEN (MONTH(@date) > MONTH(GETDATE())) OR (MONTH(@date) = MONTH(GETDATE()) AND DAY(@date) > DAY(GETDATE())) THEN 1 ELSE 0 END
+SELECT @tmpdate = DATEADD(yy, @years, @tmpdate)
+SELECT @months = DATEDIFF(m, @tmpdate, GETDATE()) - CASE WHEN DAY(@date) > DAY(GETDATE()) THEN 1 ELSE 0 END
+SELECT @tmpdate = DATEADD(m, @months, @tmpdate)
+SELECT @days = DATEDIFF(d, @tmpdate, GETDATE())
+
+SELECT @years, @months, @days
