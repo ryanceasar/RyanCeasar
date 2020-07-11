@@ -1,0 +1,28 @@
+private Object Validate_EscapeLikeValue(string Value)
+    {
+      try
+      {
+        string TempValue = "";
+        string sEscapeCharacters = "*[]%";
+        for (int iCount = 0; iCount < Value.Length; iCount++)
+        {
+          if (sEscapeCharacters.Contains(Value[iCount]) == true)
+          {
+            TempValue = TempValue + "[" + Value[iCount] + "]";
+          }
+          else if (Value[iCount].ToString() == "'")
+          {
+            TempValue = TempValue + "''";
+          }
+          else
+          {
+            TempValue = TempValue + Value[iCount];
+          }
+        }
+        return TempValue;
+      }
+      catch
+      {
+        return "";
+      }
+    }

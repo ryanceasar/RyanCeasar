@@ -1,0 +1,24 @@
+private void dgvItems_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+    {
+      if(this.dgvItems.CurrentRow != null)
+      {
+        e.Control.KeyPress -= new KeyPressEventHandler(CheckKey_KeyPress);
+        if(this.dgvItems.Columns[this.dgvItems.CurrentCell.ColumnIndex].Name == "QTY")
+        {
+          TextBox tb = e.Control as TextBox;
+          if(tb != null)
+          {
+            tb.KeyPress += new KeyPressEventHandler(CheckKey_KeyPress);
+          }
+        }
+      }
+    }
+
+    private void CheckKey_KeyPress(object sender, KeyPressEventArgs e)
+    {
+      if(!char.IsControl(e.KeyChar)
+          && !char.IsDigit(e.KeyChar) && e.KeyChar != '8')
+      {
+        e.Handled = true;
+      }
+    }
