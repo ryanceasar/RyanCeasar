@@ -13,3 +13,15 @@ SELECT @tmpdate = DATEADD(m, @months, @tmpdate)
 SELECT @days = DATEDIFF(d, @tmpdate, GETDATE())
 
 SELECT @years, @months, @days
+
+
+
+
+
+
+DECLARE @dob  datetime
+SET @dob='1988-01-09'
+
+SELECT DATEDIFF(hour,@dob,GETDATE())/8766.0 AS AgeYearsDecimal
+    ,CONVERT(int,ROUND(DATEDIFF(hour,@dob,GETDATE())/8766.0,0)) AS AgeYearsIntRound
+    ,DATEDIFF(hour,@dob,GETDATE())/8766 AS AgeYearsIntTrunc
