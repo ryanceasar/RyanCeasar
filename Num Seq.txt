@@ -1,0 +1,10 @@
+DECLARE @myDate DATETIME = '2015-05-21';
+DECLARE @day INT;
+SELECT  @day = DAY(@myDate);
+SET @day = 13
+SELECT  CASE WHEN @day IN ( 11, 12, 13 ) THEN CAST(@day AS VARCHAR(10)) + 'th'
+             WHEN @day % 10 = 1 THEN CAST(@day AS VARCHAR(10)) + 'st'
+             WHEN @day % 10 = 2 THEN CAST(@day AS VARCHAR(10)) + 'nd'
+             WHEN @day % 10 = 3 THEN CAST(@day AS VARCHAR(10)) + 'rd'
+             ELSE CAST(@day AS VARCHAR(10)) + 'th'
+        END

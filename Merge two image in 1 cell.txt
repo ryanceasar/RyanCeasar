@@ -1,0 +1,42 @@
+    private Image AddIconOverlay()
+    {
+      Image a = global::HIS.UI.WardManagement.Properties.Resources.arrow_right;
+      Image b = global::HIS.UI.WardManagement.Properties.Resources.New_word2;
+      //Image a = originalIcon.ToBitmap();
+      //Image b = overlay.ToBitmap();
+      Bitmap bitmap = new Bitmap(32, 16);
+      Graphics canvas = Graphics.FromImage(bitmap);
+      canvas.DrawImage(a, new Point(0, 0));
+      canvas.DrawImage(b, new Point(16, 0));
+      canvas.Save();
+      return bitmap;
+    }
+
+    private Image AddIconOverlay(string vVal)
+    {
+      Bitmap bitmap = new Bitmap((18 * vVal.Length), 16);
+      Graphics canvas = Graphics.FromImage(bitmap);
+
+      int iCount = vVal.Length * 18; 
+      for(int iLen = 0; iLen < vVal.Length; iLen++)
+      {
+        if(Convert.ToString(vVal[iLen]) == "1")
+        {
+          iCount = iCount - 18;
+          canvas.DrawImage(global::HIS.UI.WardManagement.Properties.Resources.New_word2, new Point(iCount, 0));
+        }
+        if(Convert.ToString(vVal[iLen]) == "2")
+        {
+          iCount = iCount - 18;
+          canvas.DrawImage(global::HIS.UI.WardManagement.Properties.Resources.pill_exclamation, new Point(iCount, 0));
+        }
+        if(Convert.ToString(vVal[iLen]) == "3")
+        {
+          iCount = iCount - 18;
+          canvas.DrawImage(global::HIS.UI.WardManagement.Properties.Resources.pin, new Point(iCount, 0));
+        }
+      }
+      canvas.Save();
+
+      return bitmap;
+    }

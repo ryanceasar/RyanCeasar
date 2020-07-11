@@ -1,0 +1,31 @@
+--Create the table and insert values as portrayed in the previous example.
+SET DATEFORMAT DMY
+
+CREATE TABLE #pvt (invoiceDate Datetime, vAmount decimal(18,4));
+GO
+INSERT INTO #pvt VALUES ('01/02/2016',100.001);
+INSERT INTO #pvt VALUES ('01/02/2016',200.001);
+INSERT INTO #pvt VALUES ('01/01/2015',100.001);
+INSERT INTO #pvt VALUES ('01/03/2015',100.001);
+INSERT INTO #pvt VALUES ('01/03/2015',100.001);
+INSERT INTO #pvt VALUES ('01/03/2015',50.001);
+INSERT INTO #pvt VALUES ('01/03/2015',100.001);
+INSERT INTO #pvt VALUES ('01/05/2015',100.001);
+INSERT INTO #pvt VALUES ('01/05/2015',50.001);
+
+SELECT *
+FROM (
+    SELECT 
+		year(invoiceDate) as [year],
+		left(datename(month,invoiceDate),3)as [month],         
+		vAmount as Amount 
+    FROM #pvt
+) as s
+PIVOT
+(
+    SUM(Amount)
+    FOR [month] IN (jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec)
+)AS pvt
+
+IF OBJECT_ID('tempdb..#pvt') IS NOT NULL DROP TABLE #pvt
+

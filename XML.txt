@@ -1,0 +1,68 @@
+
+    private string M_getXMLData()
+    {
+      StringBuilder sb = new StringBuilder();
+      ArrayList al = new ArrayList();
+      for(int iRow = 0; iRow < this.dgvItemList.Rows.Count; iRow++)
+      {
+        if(!string.IsNullOrEmpty(Convert.ToString(this.dgvItemList.Rows[iRow].Cells["RefServiceCode"].Value)))
+        {
+          al.Add(Convert.ToString(this.dgvItemList.Rows[iRow].Cells["Major_code"].Value));
+          al.Add(Convert.ToString(this.dgvItemList.Rows[iRow].Cells["Minor_Code"].Value));
+          al.Add(Convert.ToString(this.dgvItemList.Rows[iRow].Cells["Item_Code"].Value));
+          al.Add(Convert.ToString(this.dgvItemList.Rows[iRow].Cells["Batch_No"].Value));
+          al.Add(Convert.ToString(this.dgvItemList.Rows[iRow].Cells["Expiry_Date"].Value));
+          al.Add(Convert.ToString(this.dgvItemList.Rows[iRow].Cells["Closing_Balance"].Value));
+          al.Add(Convert.ToString(this.dgvItemList.Rows[iRow].Cells["M_R_P"].Value));
+          sb.Append(SetXMLTable(ref al));
+        }
+      }
+      return sb.ToString();
+    }
+    private string SetXMLTable(ref ArrayList xml)
+    {
+      StringBuilder strXML = new StringBuilder();
+      try
+      {
+        if(xml.Count > 0)
+        {
+          strXML.Append("<Table1>");
+          for(int iIndex = 0; iIndex < xml.Count; iIndex++)
+          {
+            strXML.Append("<c" + (iIndex + 1).ToString() + ">");
+            strXML.Append(parseXML(xml[iIndex]));
+            strXML.Append("</c" + (iIndex + 1).ToString() + ">");
+          }
+          strXML.Append("</Table1>");
+          xml = new ArrayList();
+        }
+      }
+      catch(Exception)
+      {
+
+      }
+      return strXML.ToString();
+    }
+    private string parseXML(object strValue)
+    {
+      string retValue = string.Empty;
+      retValue = strValue.ToString();
+      try
+      {
+        if(retValue.Trim().Length > 0)
+        {
+          retValue = retValue.Replace("&", "&amp;");
+          retValue = retValue.Replace("<", "&lt;");
+          retValue = retValue.Replace(">", "&gt;");
+          retValue = retValue.Replace("\"", "&quot;");
+          retValue = retValue.Replace("'", "&apos;");
+
+          retValue = retValue.Trim();
+        }
+      }
+      catch(Exception)
+      {
+
+      }
+      return retValue;
+    }

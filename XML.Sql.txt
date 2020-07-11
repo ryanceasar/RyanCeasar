@@ -1,0 +1,12 @@
+
+  @xmlData AS XML = NULL,  
+
+CREATE TABLE #tbl (FMTITEMNO varchar(50), Qty int, M_R_P decimal(18,4), Expiry_Date varchar(10), Batch_No varchar(20),Sr_No int)          
+INSERT INTO #tbl          
+SELECT data.value('c1[1]', 'varchar(50)'),  
+  data.value('c2[1]', 'int'),  
+  data.value('c3[1]', 'decimal(18,4)'),  
+  data.value('c4[1]', 'varchar(10)'),  
+  data.value('c5[1]', 'varchar(20)'),  
+  data.value('c6[1]', 'int')  
+FROM @xmlData.nodes('/Table1') AS ParamValues(data)   
