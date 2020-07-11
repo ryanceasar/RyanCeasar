@@ -1,0 +1,32 @@
+
+        DataTable dtLocation1 = new DataTable();
+        DataTable dtLocation2 = new DataTable();
+        public ActionResult GetLocation1()
+        {
+            dtLocation1.Columns.Add("Loc1_ID");
+            dtLocation1.Columns.Add("Loc1_Desc");
+            dtLocation1.Rows.Add("1", "Loc 1 : AAAA");
+            dtLocation1.Rows.Add("2", "Loc 1 : BBBB");
+            dtLocation1.Rows.Add("3", "Loc 1 : CCCC");
+            dtLocation1.Rows.Add("4", "Loc 1 : DDDD");
+            dtLocation1.Rows.Add("5", "Loc 1 : EEEE");
+
+            return PartialView("_Location1", dtLocation1);
+        }
+
+        public ActionResult GetLocation2(string vLoc1_ID)
+        {
+            dtLocation2.Columns.Add("Loc1_ID");
+            dtLocation2.Columns.Add("Loc2_ID");
+            dtLocation2.Columns.Add("Loc2_Desc");
+            dtLocation2.Rows.Add("1", "1", "Loc 1.2 : 2AAAA");
+            dtLocation2.Rows.Add("1", "2", "Loc 1.2 : 2BBBB");
+            dtLocation2.Rows.Add("1", "3", "Loc 1.2 : 2CCCC");
+            dtLocation2.Rows.Add("1", "4", "Loc 1.2 : 2DDDD");
+            dtLocation2.Rows.Add("2", "5", "Loc 2.2 : 2EEEE");
+            dtLocation2.Rows.Add("2", "6", "Loc 2.2 : 2DDDD");
+            dtLocation2.Rows.Add("2", "7", "Loc 2.2 : 2EEEE");
+
+            dtLocation2.DefaultView.RowFilter = "Loc1_ID = '" + vLoc1_ID + "'";
+            return PartialView("_Location2", dtLocation2.DefaultView.ToTable());
+        }
